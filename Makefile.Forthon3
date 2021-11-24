@@ -1,0 +1,21 @@
+SO = so
+BUILDDIR = build
+DIRLIST = face
+MYPYTHON = python3
+FORTHON = Forthon3
+BUILDBASE = -v --build-base $(BUILDDIR)
+INSTALLARGS = --pkgbase face $(BUILDBASE) $(OMPFLAGS)
+
+
+all: $(BUILDDIR)/facepydep
+	rm -f FACEC.so
+
+
+$(BUILDDIR)/facepydep:  face/face.F90  face/error.F90 face/functions.F90 face/cap_functions.F90 face/header.F90 face/maths.F90 face/error.F90 face/compute.F90 face/newton_solver.F face/init.F90 face/io.F90 face/solver.F90  face/face.v
+	$(FORTHON) -a $(INSTALLARGS)  -a $(FCOMP) $(DEBUG) --interfacefile face/face.v -f face/face.F90 face  face/header.F90 face/error.F90 face/functions.F90 face/cap_functions.F90 face/io.F90 face/compute.F90 face/maths.F90 face/newton_solver.F face/solver.F90  face/init.F90
+	touch $@
+
+clean:
+	find . -depth -name build -exec rm -rf {} \;
+	find . -depth -name __pycache__ -exec rm -rf {} \;
+	touch FACEC_Forthon.c

@@ -1,0 +1,1 @@
+from .face import *from . import *try:    from face.__version__ import __version__    from face.__version__ import GitHashexcept:    try:        from __version__ import __version__        from __version__ import GitHash    except:        __version__ = 'unknown'        GitHash=Noneprint('>>> FACE version:',__version__) print('>>> FACE Git SHA:,',GitHash)    

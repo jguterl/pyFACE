@@ -1,0 +1,193 @@
+face
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+avr integer  #
+
+
+
+
+
+
+type inventories
+  Nnetbulk real           #
+ Nnetsrf real           #
+ Ntotbulk real           #
+ Ntotsrf real           #
+  Enetbulk real           #
+
+ Etotbulk real           #
+
+end type inventories
+
+type particle_balances
+ Nnet real /0d0,Ninflux/ #
+end type particle_balances
+
+type energy_balances
+ Enet real /0d0,Ein/ #
+end type energy_balances
+
+type outgassing_fluxes
+ Gdes real           #
+ min_Gdes real           #
+ max_Gdes real           #
+ ave_Gdes     real           # ave deviation of Gdes over FACE run
+ sig_Gdes    real           # sdt deviation of Gdes over FACE run
+ Gpermeation  real           # =Gdes_r
+end type outgassing_fluxes
+
+type wall_temperatures
+ srf_temp_l,srf_temp_r real           #
+ mean_temp real           #
+ max_temp real           #
+ min_temp real           #
+end type wall_temperatures
+
+ init_inventory(:) type(inventories)  #
+ final_inventory(:) type(inventories)  #
+ particle_balance type(particle_balances)  #
+ energy_balance type(energy_balances)  #
+ outgassing_flux type(outgassing_fluxes)  #
+ init_wall_temp type(wall_temperatures)  #
+final_wall_temp type(wall_temperatures)  #
+
+
+
+
+
+
+
+
+
+
+
+
+#
+#     ------------------------------------------------------------------
+#       Reaction parameters
+#     ------------------------------------------------------------------
+ n
+#     Surface
+ error_status integer  /0/ #
+
+
+
+
+
+type trace_fluxes
+ sum_inflx real  #
+ sum_qflx real  #
+ sum_Q_l real  #
+ sum_Q_r real  #
+ sum_Gdes_l real  #
+ sig_Gdes_l real  #
+ min_Gdes_l real  #
+ max_Gdes_l real  #
+ sum_Gdes_r real  #
+ sig_Gdes_r real  #
+ min_Gdes_r real  #
+ max_Gdes_r real  #
+end type trace_fluxes
+ trace_flux(:) type(trace_fluxes)  #
+
+type onthefly_inventories
+ int_dens real  #
+ int_dsrf real  #
+ net_int_dens real  #
+ net_int_dsrf real  #
+ int_des real  #
+ int_src real  #
+end type onthefly_inventories
+ onthefly_inventory(:) type(onthefly_inventories)  #
+
+
+
+
+#
+#     ------------------------------------------------------------------
+#       Environment variables
+#     ------------------------------------------------------------------
+
+type fluidcode_inputs
+ wall_idx             integer                       # Index of the wall stratum
+ iter                 integer                        # Fluid code iteration
+ Ndump_space          integer                        # # space data files to be dumped
+ Ndump_time           integer                        #  # of times time data are dumped
+ append               logical                        # append mode for dumping data
+ time                 real                       # Fluid code time
+ dt                   real                       # Time step of the fluid
+ dt0_face              real                       # Time step of FACE
+ nspc_fluid                  integer                        # Number of incoming species from fluid code
+ indexspc(:)              integer  # Index of species in FACE (usually "k" in FACE)
+ namespc(:)       character(Lname)  # Name of the incoming species from fluid code
+ Gamma_in_base(:)       real  # Particle flux'
+ Emean(:)         real  # Average energy of incoming particle enrg'
+ qflx_in                  real                       # Heat flux from fluid code
+ read_state_file   character*256       # restart from this staste file
+ final_state_file     character*256       # store final state in this state file
+ tempwall             real                       # temperature of the wall from fluid code
+ solve_heat_eq_string        character(15)                  # if solve_heat_eq then use Qin otherwise T=tempwall for the entire bulk
+casename             character*256        # casename (see below)
+casename_base        character*256        # base to form casename=casename_base_iteration_idx_wall
+input_file             character*256        # casename
+log_file             character*256        # casename
+path             character*256        # casename
+end type fluidcode_inputs
+
+type fluidcode_outputs
+ nspc_fluid                  integer                # Number of incoming species from fluid code
+ nspc_face                  integer                # Number of incoming species from fluid code
+ indexspc(:)              integer  # Index of species in FACE (usually "k" in FACE)
+ outgassing_flux type(outgassing_fluxes)  #
+ init_wall_temp,final_wall_temp type(wall_temperatures)   #
+ particle_balance type(particle_balances)    #
+ energy_balance type(energy_balances)    #
+ init_inventory(:),final_inventory(:) type(inventories)  #
+
+end type fluidcode_outputs
+
+
+type FACE_inputs
+ run_mode character*256  #
+ input_filename character*256  #
+ read_input_file logical    /TRUE/ #
+logfile character*256  #
+ couple_fluidcode logical  /FALSE/ #
+ fluidcode_input type(fluidcode_inputs)   #
+path character*256  #
+casename character*256  #
+end type FACE_inputs
+
+type FACE_outputs
+ cpu_runtime real   #
+ error_status integer   #
+ nspc integer   #
+ outgassing_flux type(outgassing_fluxes)  #
+ init_wall_temp,final_wall_temp type(wall_temperatures)   #
+ particle_balance type(particle_balances)    #
+ energy_balance type(energy_balances)    #
+ init_inventory(:),final_inventory(:) type(inventories)  #
+
+**** test: # added by J.Guterl
+print_hello() subroutine

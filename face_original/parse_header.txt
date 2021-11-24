@@ -1,0 +1,538 @@
+!------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!------------------------------------------------------------------------------
+!
+! MODULE: Module Name
+!
+!> @author
+!> Module Author Name and Affiliation
+!
+! DESCRIPTION:
+!> Brief description of module.
+!
+! REVISION HISTORY:
+! DD Mmm YYYY - Initial Version
+! TODO_dd_mmm_yyyy - TODO_describe_appropriate_changes - TODO_name
+!------------------------------------------------------------------------------
+module modFACE_header
+use modFACE_precision
+implicit none
+!     ******************************************************************
+!     * This file contains all common variables specifications         *
+!     * for 1-dimensional First Wall simulation Code "FACE"            *
+!     *                                                                *
+!     * Author: Roman D. Smirnov                                       *
+!     * E-mail: rsmirnov@ucsd.edu; rosmirnov@yahoo.com                 *
+!     *                                                                *
+!     ******************************************************************
+!     ------------------------------------------------------------------
+!      Array dimensions and grid parameters
+!     ------------------------------------------------------------------
+verbose_parser logical /.false./ #
+verbose_input logical /.false./ #
+verbose_init logical /.false./ #
+ verbose_step logical  /.false./ #
+ verbose_cap logical  /.false./ #
+ verbose_debug logical  /.false./ #
+ verbose_couple logical  /.false./ #
+ verbose_restore logical  /.false./ #
+ verbose_maths logical  /.false./ #
+ verbose_interface logical  /.false./ #
+ verbose_help logical  /.false./ #
+ verbose_version logical  /.false./ #
+ verbose_header logical  /.false./ #
+ verbose_surface logical  /.false./ #
+ enforce_error logical /.true./ #
+ first_voldump logical /.true./ #
+ compute_spc logical  /.true./ #
+ critical_reduction logical /.false./ #
+loop_reduction_old logical /.false./ #
+loop_reduction logical /.false./ #
+counter_reduction integer  /0/ #
+
+
+ngrd integer /0/ #
+nspc integer /0/ #
+neq integer /0/ #
+ nramp integer /0/ #
+ iout integer /6/ #
+ tcpustart, tcpufinish,walltime_start,walltime_end real(DP)  /6/ #
+ Nprint_run_info integer  /2 / # print info on current run every Nprint_run_info steps
+ min_rate_surface real(DP) /1.0d-20/ #
+! **  Some physical and mathematical constants
+ee real(DP) /1.602176462d-19/ #
+eps0 real(DP) /8.854187817d-12/ #
+amass real(DP) /1.66053886d-27/ #
+pi real(DP) /3.14159265358979d0/ #
+twopi real(DP) /6.28318530717959d0/ #
+sqrt2 real(DP) /sqrt(2.d0)/ #
+kb real(DP) /1.3806504d-23/ #
+eekb real(DP) /1.160450595d+04/ #
+sigma_sb real(DP) /5.670400d-08/ #
+
+! ** coefficients for BDF
+!     --- 1st order BDF ---
+a11 real(DP) /1.d0/ #
+a12 real(DP) /1.d0/ #
+!     --- 2nd order BDF ---
+a21 real(DP) / 4.d0/3.d0/ #
+a22 real(DP) /-1.d0/3.d0/ #
+a23 real(DP) / 2.d0/3.d0/ #
+!     --- 5th order BDF ---
+a51 real(DP) / 48.d0/25.d0/ #
+a52 real(DP) /-36.d0/25.d0/ #
+a53 real(DP) / 16.d0/25.d0/ #
+a54 real(DP) /- 3.d0/25.d0/ #
+a55 real(DP) / 12.d0/25.d0/ #
+
+solver_eps real(DP)  /3.d-3, solver_udspl/ #
+solver_fstp real(DP)  /1.d-1/ #
+ iter_solver_max integer  /150/ #
+ iter_solver_max_first integer  /150/ #
+ finalcheck logical  /.true./ #
+
+ default_inputfile character(string_length)  /"default_inputfile.face"/ #
+!
+
+
+!     ------------------------------------------------------------------
+!      Spatial and temporal parameters
+!     ------------------------------------------------------------------
+!numeric
+ ndt  integer  /"default_inputfile.face"/ # >@var size of storage for time dependent variables
+! grid
+ length  real(DP) /"default_inputfile.face"/ #length spatial domain
+ x(:) real(DP) /"default_inputfile.face"/ #
+ dx(:) real(DP) /"default_inputfile.face"/ #
+alpha real(DP)  /"default_inputfile.face"/ #
+grid_dx0 real(DP)  /"default_inputfile.face"/ #
+grid_type character(string_length)  /"default_inputfile.face"/ #
+grid_gen_mode character(string_length)  /"default_inputfile.face"/ #
+! time
+ dt_face     real(DP) /"default_inputfile.face"/ #>@var current solver time step
+ dt_face_old     real(DP) /"default_inputfile.face"/ #>@var previous solver time step
+ dt_face_last     real(DP) /"default_inputfile.face"/ #>@var last solver time step with successful convergence
+ min_dt_face    real(DP) /"default_inputfile.face"/ #>@var current solver time step
+ max_dt_face    real(DP) /"default_inputfile.face"/ #>@var current solver time step
+ dt0_face  real(DP) /"default_inputfile.face"/ # nominal time step
+ reduction_factor_dt_spc real(DP)  /1d0/ #
+ reduction_factor_dt_heat real(DP)  /1d0/ #
+ adjust_reduction_factor logical  /.false./ #
+ adjust_reduction_factor_string character(string_length) /.false./ #
+ Nstep_increase_dt integer /10/ #
+ solver_step_count integer  /0/ #
+ max_iter real(DP)  /1e9/ #
+ end_time   real(DP) /1e9/ # end time of simulations
+ time   real(DP) /1e9/ # current time of simulations
+ time_savevol   real(DP) /1e9/ #
+ time_savetime   real(DP) /1e9/ #
+ start_time  real(DP) /1e9/ # start time  of simulation
+ cdt    !      real(DP) /1e9/ # factor for solver time step (dt)
+! temp
+ cero      real(DP) /1e9/ # erosion velocity
+ cero_min real(DP) /1e9/ #
+ cero_max real(DP) /1e9/ #
+ gamero real(DP) /1e9/ #
+
+
+ tramp0 real(DP) /0/ #
+ tramp1 real(DP) /0/ #
+
+! parameters controlling data dumping
+ dump_space_dt real(DP) /0/ #
+ dump_time_dt real(DP) /0/ #
+ dump_restart_dt real(DP) /0/ #
+ dump_space logical /.false./ #
+ dump_time logical /.false./ #
+ dump_restart logical /.false./ #
+ dump_space_string character(string_length) /.false./ #
+ dump_time_string character(string_length) /.false./ #
+ dump_restart_string character(string_length) /.false./ #
+
+ nucut real(DP) /1d99/ #
+ delta real(DP) /0.d0/ #
+ iter_solver integer /0 / # #of solver iterations at each time step
+iteration integer /0/ #
+ order_solver integer /0/ #
+
+!       Save file numerations
+ max_ifile integer  /0/ #
+parameter(max_ifile=10000)
+ sfln_voldata integer /0/ #
+ sfln_srfdata integer /0/ #
+ sfln_heatdata integer /0/ #
+ normf real(DP) /0.d0/ #
+restart_filename character(string_length) /0.d0/ #
+
+
+!       Flags
+ read_input_file logical /.true./ #
+ restore_state_temp logical /.true./ #
+dump_vol_append logical /.false./ #
+dump_srf_append logical /.false./ #
+dump_time_append logical /.false./ #
+ solve_heat_eq logical /.false./ #
+ variable_timestep logical /.false./ #
+avr integer /.false./ #
+ input_filename character(string_length) /.false./ #
+ logfile character(string_length) /.false./ #
+ read_restart_file character(string_length) /.false./ #
+ read_state_file character(string_length) /.false./ #
+ steady_state_string character(string_length) /.false./ #
+ steady_state logical /.false./ #
+ framp_string character(string_length) /.false./ #
+ framp integer /.false./ #
+ framp_none integer /999/ #
+ framp_readfile integer /998/ #
+ solve_heat_eq_string character(string_length) /998/ #
+ variable_timestep_string character(string_length) /998/ #
+ final_state_file character(string_length) /998/ #
+ casename character(string_length) /998/ #
+
+type inventories
+  Nnetbulk real(DP)          /998/ #
+ Nnetsrf real(DP)          /998/ #
+ Ntotbulk real(DP)          /998/ #
+ Ntotsrf real(DP)          /998/ #
+  Enetbulk real(DP)          /998/ #
+
+ Etotbulk real(DP)          /998/ #
+
+end type inventories
+
+type particle_balances
+ Nnet real(DP) /0d0,Ninflux/ #
+end type particle_balances
+
+type energy_balances
+ Enet real(DP) /0d0,Ein/ #
+end type energy_balances
+
+type outgassing_fluxes
+ Gdes real(DP)          /0d0,Ein/ #
+ min_Gdes real(DP)          /0d0,Ein/ #
+ max_Gdes real(DP)          /0d0,Ein/ #
+ ave_Gdes     real(DP)          /0d0,Ein/ # ave deviation of Gdes over FACE run
+ sig_Gdes    real(DP)          /0d0,Ein/ # sdt deviation of Gdes over FACE run
+ Gpermeation  real(DP)          /0d0,Ein/ # =Gdes_r
+end type outgassing_fluxes
+
+type wall_temperatures
+ srf_temp_l,srf_temp_r real(DP)          /0d0,Ein/ #
+ mean_temp real(DP)          /0d0,Ein/ #
+ max_temp real(DP)          /0d0,Ein/ #
+ min_temp real(DP)          /0d0,Ein/ #
+end type wall_temperatures
+
+ init_inventory(:) type(inventories) /0d0,Ein/ #
+ final_inventory(:) type(inventories) /0d0,Ein/ #
+ particle_balance type(particle_balances) /0d0,Ein/ #
+ energy_balance type(energy_balances) /0d0,Ein/ #
+ outgassing_flux type(outgassing_fluxes) /0d0,Ein/ #
+ init_wall_temp type(wall_temperatures) /0d0,Ein/ #
+final_wall_temp type(wall_temperatures) /0d0,Ein/ #
+
+!
+!     ------------------------------------------------------------------
+!       Material parameters
+!     ------------------------------------------------------------------
+
+ temp_init real(DP) /300d0/ #
+ temp_final real(DP) /300d0/ #
+ dtemp real(DP) /0d0/ #
+ lambda real(DP) /0d0/ #
+!
+ cvlm real(DP) /1d0/ #
+ csrf real(DP) /1d0/ #
+ clng real(DP) /1d0/ #
+
+!     implantation parameters
+implantation_model(:) character(lname) /1d0/ #
+implantation_depth(:) real(DP) /1d0/ #
+diagnostic_depth(:) real(DP) /1d0/ #
+j_implantation_depth(:) integer /1d0/ #
+j_diagnostic_depth(:) integer /1d0/ #
+implantation_width(:) real(DP) /1d0/ #
+enrg(:) real(DP) /1d0/ #
+inflx(:)  real(DP) /1d0/ # influx of particles (may differ from nominal particle flux in pulsed_plasma mode)
+Gamma_in_max(:)  real(DP) /1d0/ # max influx of particles
+Gamma_in_base(:)  real(DP) /1d0/ # nominal influx of particles
+Gamma_in_pulse_period(:)  real(DP) /1d0/ # max influx of particles
+Gamma_in_pulse_duration(:)  real(DP) /1d0/ # max influx of particles
+Gamma_in_pulse_starttime(:)  real(DP) /1d0/ # max influx of particles
+Gamma_in_pulse_string(:)  character(lname) /1d0/ # nominal influx of particles
+Gamma_in_pulse(:)  integer /1d0/ # nominal influx of particles
+ Gamma_in_pulse_R integer /999/ #
+ Gamma_in_pulse_N integer /998/ #
+ Gamma_in_pulse_S integer /997/ #
+ Gamma_in_pulse_B integer /996/ #
+T_pulse_string character(lname) /"N" / # nominal influx of particles
+T_pulse  integer /"N" / # nominal influx of particles
+ T_pulse_R integer /999/ #
+ T_pulse_N integer /998/ #
+ T_pulse_S integer /997/ #
+ T_pulse_B integer /996/ #
+T_pulse_max  real(DP) /996/ # max influx of particles
+T_pulse_period  real(DP) /996/ # max influx of particles
+T_pulse_duration  real(DP) /996/ # max influx of particles
+T_pulse_starttime  real(DP) /996/ # max influx of particles
+Q_in_max  real(DP)                     /996/ # max heat flux
+Q_in_base  real(DP)                     /996/ # nominal heat flux
+Q_in_pulse_period  real(DP)                     /996/ #
+Q_in_pulse_duration  real(DP)                     /996/ #
+Q_in_pulse_starttime  real(DP)                     /996/ #
+Q_pulse_string  character(lname) /996/ # type of Q pulse
+Q_in_pulse  integer /996/ #
+ Q_in_pulse_R integer /999/ #
+ Q_in_pulse_N integer /998/ #
+ Q_in_pulse_S integer /997/ #
+ Q_in_pulse_B integer /996/ #
+gas_pressure(:) real(DP) /996/ #
+ gas_temp(:) real(DP) /996/ #
+ mass(:) real(DP) /996/ #
+ temp(:,:) real(DP) /996/ #
+ rtime(:) real(DP) /996/ #
+ rtemp(:) real(DP) /996/ #
+!
+!     ------------------------------------------------------------------
+!       Species parameters
+!     ------------------------------------------------------------------
+!
+namespc(:) character(lname) /996/ #
+left_surface_model_string(:) character(lname) /996/ #
+right_surface_model_string(:) character(lname) /996/ #
+left_surface_model(:) integer /996/ #
+right_surface_model(:) integer /996/ #
+ surf_model_B integer /999/ #
+ surf_model_N integer /998/ #
+ surf_model_S integer /997/ #
+!      Volumetric species terms
+dens0(:) real(DP) /997/ #
+gxmax(:) real(DP) /997/ #
+gsigm(:) real(DP) /997/ #
+
+cdif0(:) real(DP) /997/ #
+edif (:) real(DP) /997/ #
+flx (:,:,:) real(DP) /997/ #
+rate_d (:,:,:) real(DP) /997/ #
+ gprof(:) character(lname) /997/ #
+jout(:,:) real(DP) /997/ #
+
+
+
+dsrfl0(:) real(DP) /997/ #
+dsrfr0(:) real(DP) /997/ #
+dsrfm(:) real(DP) /997/ #
+densm(:) real(DP) /997/ #
+etr   (:) real(DP) /997/ #
+edtr  (:) real(DP) /997/ #
+
+
+!     Boundary species parameters
+
+order_desorption_left(:) real(DP) /997/ #
+order_desorption_right(:) real(DP) /997/ #
+Eabs_l(:) real(DP) /997/ #
+Edes_l(:) real(DP) /997/ #
+Edes_lsat(:) real(DP) /997/ #
+Eb_l(:) real(DP) /997/ #
+Eads_l(:) real(DP) /997/ #
+
+Eabs_r(:) real(DP) /997/ #
+Edes_r(:) real(DP) /997/ #
+Edes_rsat(:) real(DP) /997/ #
+Eb_r(:) real(DP) /997/ #
+Eads_r(:) real(DP) /997/ #
+
+Kabs_l(:) real(DP) /997/ #
+Kdes_l(:) real(DP) /997/ #
+Kb_l(:) real(DP) /997/ #
+Kads_l(:) real(DP) /997/ #
+Kabs_r(:) real(DP) /997/ #
+Kdes_r(:) real(DP) /997/ #
+Kb_r(:) real(DP) /997/ #
+Kads_r(:) real(DP) /997/ #
+
+
+K0abs_l(:) real(DP) /997/ #
+K0des_l(:) real(DP) /997/ #
+K0b_l(:) real(DP) /997/ #
+K0ads_l(:) real(DP) /997/ #
+
+K0abs_r(:) real(DP) /997/ #
+K0des_r(:) real(DP) /997/ #
+K0b_r(:) real(DP) /997/ #
+K0ads_r(:) real(DP) /997/ #
+
+nu (:) real(DP) /997/ #
+j0 (:) real(DP) /997/ #
+dens(:,:,:) real(DP) /997/ #
+!
+!     ------------------------------------------------------------------
+!       Reaction parameters
+!     ------------------------------------------------------------------
+ nuth (:,:,:,:) real(DP) /997/ #
+ kbin (:,:,:,:,:) real(DP) /997/ #
+nuth0(:,:) real(DP) /997/ #
+ kbin0(:,:,:) real(DP) /997/ #
+eth  (:,:) real(DP) /997/ #
+ ebin (:,:,:) real(DP) /997/ #
+!
+!     ------------------------------------------------------------------
+!       Species variables
+!     ------------------------------------------------------------------
+!     Bulk
+srs(:,:,:) real(DP) /997/ #
+src_profile(:,:) real(DP) /997/ #
+srb (:,:,:,:) real(DP) /997/ #
+src (:,:,:) real(DP) /997/ #
+cdif(:,:,:) real(DP) /997/ #
+rct (:,:,:) real(DP) /997/ #
+ero_flx (:,:,:)   real(DP) /997/ # erosion flux
+dif_flx (:,:,:)   real(DP) /997/ # erosion flux
+!     Surface
+ error_status integer  /0/ #
+
+
+! left surface at x(j=0)
+ dsrfl(:,:)    real(DP) /0/ # density on left surface
+ Gsrf_l(:,:)  real(DP) /0/ # net flux of species onto the left surface
+ Gabs_l(:,:) real(DP) /0/ #
+ Gdes_l(:,:) real(DP) /0/ #
+ Gb_l(:,:) real(DP) /0/ #
+ Gads_l(:,:) real(DP) /0/ #
+
+!right surface at x(j=n+1)
+ dsrfr(:,:)    real(DP) /0/ # density on right surface
+ Gsrf_r(:,:)  real(DP) /0/ # net flux of species onto the right surface
+ Gabs_r(:,:) real(DP) /0/ #
+ Gdes_r(:,:) real(DP) /0/ #
+ Gb_r(:,:) real(DP) /0/ #
+ Gads_r(:,:) real(DP) /0/ #
+
+type trace_fluxes
+ sum_inflx real(DP) /0/ #
+ sum_qflx real(DP) /0/ #
+ sum_Q_l real(DP) /0/ #
+ sum_Q_r real(DP) /0/ #
+ sum_Gdes_l real(DP) /0/ #
+ sig_Gdes_l real(DP) /0/ #
+ min_Gdes_l real(DP) /0/ #
+ max_Gdes_l real(DP) /0/ #
+ sum_Gdes_r real(DP) /0/ #
+ sig_Gdes_r real(DP) /0/ #
+ min_Gdes_r real(DP) /0/ #
+ max_Gdes_r real(DP) /0/ #
+end type trace_fluxes
+ trace_flux(:) type(trace_fluxes) /0/ #
+
+type onthefly_inventories
+ int_dens real(DP) /0/ #
+ int_dsrf real(DP) /0/ #
+ net_int_dens real(DP) /0/ #
+ net_int_dsrf real(DP) /0/ #
+ int_des real(DP) /0/ #
+ int_src real(DP) /0/ #
+end type onthefly_inventories
+ onthefly_inventory(:) type(onthefly_inventories) /0/ #
+ active_cap_bulk logical  /.false./ #
+ active_cap_surface logical  /.false./ #
+ print_onthefly_inventory logical  /.false./ #
+print_onthefly_inventory_string character(string_length) /.false./ #
+active_cap_surface_string character(string_length) /.false./ #
+active_cap_bulk_string character(string_length) /.false./ #
+dump_vol_append_string character(string_length) /.false./ #
+dump_srf_append_string character(string_length) /.false./ #
+!     ------------------------------------------------------------------
+!       Thermal variables
+!     ------------------------------------------------------------------
+ thcond   real(DP) /0/ #
+ rho      real(DP) /0/ #
+ cp       real(DP) /0/ #
+rhocp     real(DP) /0/ #
+ emiss    real(DP) /0/ #
+qform     real(DP) /0/ #
+ qflx_in  real(DP) /0 / # incoming heat flux from plasma
+ rad      real(DP) /0/ #
+rad_min   real(DP) /0/ #
+ rad_max  real(DP) /0/ #
+t1        real(DP) /0/ #
+ t2       real(DP) /0/ #
+t3        real(DP) /0/ #
+tpulse    !      real(DP) /0 / # period of plasma pulse
+rate_t(:,:) real(DP) /0 / #
+qflx(:,:) real(DP) /0 / #
+ero_qflx(:,:) real(DP) /0 / #
+
+!
+!     ------------------------------------------------------------------
+!       Environment variables
+!     ------------------------------------------------------------------
+character(string_length) path_folder ! top folder where simulations files anf folders are written in
+character(string_length) dat_folder ! top folder where vol,srf and heat data files are written in
+
+type fluidcode_inputs
+ wall_idx             integer                      /0 / # Index of the wall stratum
+ iter                 integer                       /0 / # Fluid code iteration
+ Ndump_space          integer                       /0 / # # space data files to be dumped
+ Ndump_time           integer                       /0 / #  # of times time data are dumped
+ append               logical                       /0 / # append mode for dumping data
+ time                 real(DP)                      /0 / # Fluid code time
+ dt                   real(DP)                      /0 / # Time step of the fluid
+ dt0_face              real(DP)                      /0 / # Time step of FACE
+ nspc_fluid                  integer                       /0 / # Number of incoming species from fluid code
+ indexspc(:)              integer /0 / # Index of species in FACE (usually "k" in FACE)
+ namespc(:)       character(Lname) /0 / # Name of the incoming species from fluid code
+ Gamma_in_base(:)       real(DP) /0 / # Particle flux'
+ Emean(:)         real(DP) /0 / # Average energy of incoming particle enrg'
+ qflx_in                  real(DP)                      /0 / # Heat flux from fluid code
+ read_state_file   character(string_length)      /0 / # restart from this staste file
+ final_state_file     character(string_length)      /0 / # store final state in this state file
+ tempwall             real(DP)                      /0 / # temperature of the wall from fluid code
+ solve_heat_eq_string        character(15)                 /0 / # if solve_heat_eq then use Qin otherwise T=tempwall for the entire bulk
+casename             character(string_length)       /0 / # casename (see below)
+casename_base        character(string_length)       /0 / # base to form casename=casename_base_iteration_idx_wall
+input_file             character(string_length)       /0 / # casename
+log_file             character(string_length)       /0 / # casename
+path             character(string_length)       /0 / # casename
+end type fluidcode_inputs
+
+type fluidcode_outputs
+ nspc_fluid                  integer               /0 / # Number of incoming species from fluid code
+ nspc_face                  integer               /0 / # Number of incoming species from fluid code
+ indexspc(:)              integer /0 / # Index of species in FACE (usually "k" in FACE)
+ outgassing_flux type(outgassing_fluxes) /0 / #
+ init_wall_temp,final_wall_temp type(wall_temperatures)  /0 / #
+ particle_balance type(particle_balances)   /0 / #
+ energy_balance type(energy_balances)   /0 / #
+ init_inventory(:),final_inventory(:) type(inventories) /0 / #
+
+end type fluidcode_outputs
+
+
+type FACE_inputs
+ run_mode character(string_length) /0 / #
+ input_filename character(string_length) /0 / #
+ read_input_file logical    /.true./ #
+logfile character(string_length) /.true./ #
+ couple_fluidcode logical  /.false./ #
+ fluidcode_input type(fluidcode_inputs)  /.false./ #
+path character(string_length) /.false./ #
+casename character(string_length) /.false./ #
+end type FACE_inputs
+
+type FACE_outputs
+ cpu_runtime real(DP)  /.false./ #
+ error_status integer  /.false./ #
+ nspc integer  /.false./ #
+ outgassing_flux type(outgassing_fluxes) /.false./ #
+ init_wall_temp,final_wall_temp type(wall_temperatures)  /.false./ #
+ particle_balance type(particle_balances)   /.false./ #
+ energy_balance type(energy_balances)   /.false./ #
+ init_inventory(:),final_inventory(:) type(inventories) /.false./ #
+
+end type FACE_outputs
+
+
+
+end module modFACE_header
