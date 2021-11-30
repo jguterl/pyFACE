@@ -113,7 +113,7 @@ class uedgeClean(build):
         call(['make', '-f', 'Makefile.Forthon3', 'clean'])
 
 
-facepkgs = ['face']
+facepkgs = ['input','solver']
 
 
 def makeobjects(pkg):
@@ -143,7 +143,7 @@ with open('pyscripts/__version__.py','w') as ff:
     ff.write("GitHash='{}'\n".format(GitHash))
 
 define_macros=[("WITH_NUMERIC", "0"),
-               ("FORTHON_PKGNAME", '\"uedgeC\"'),
+               ("FORTHON_PKGNAME", '\"FACEC\"'),
                ("FORTHON","1")]
 
 # check for readline
@@ -155,21 +155,21 @@ if rln == 0:
    libraries = ['readline'] + libraries
 
 
-setup(name="face",
+setup(name="pyface",
       version=version,
       author='R. Smirnov/J. Guterl',
       author_email="",
       maintainer='',
       maintainer_email='',
-      description="FACE",
+      description="pyFACE",
       platforms="Unix, Windows (cygwin), Mac OSX",
-      packages=['face'],
-      package_dir={'face': 'pyscripts'},
+      packages=['pyface'],
+      package_dir={'pyface': 'pyscripts'},
       # include_package_data=True,
       scripts=[],
-      ext_modules=[Extension('face.FACEC',
+      ext_modules=[Extension('pyface.FACEC',
                              ['FACEC_Forthon.c',
-                              os.path.join(builddir, 'Forthon.c'),'face/handler.c','face/initialize.c'],
+                              os.path.join(builddir, 'Forthon.c'),'solver/initialize.c'],
                              include_dirs=[builddir, numpy.get_include()],
                              library_dirs=library_dirs,
                              libraries=libraries,
