@@ -5,18 +5,18 @@ BUILDBASE = -v --build-base $(BUILDDIR)
 INSTALLARGS = --pkgbase pyface $(BUILDBASE) $(OMPFLAGS)
 
 
-all: $(BUILDDIR)/inputpydep $(BUILDDIR)/solverpydep 
+all: $(BUILDDIR)/facepydep 
 	rm -f FACEC.so
 
-$(BUILDDIR)/inputpydep: solver/face.F90  input/input.v
-	$(FORTHON) -a $(INSTALLARGS) -a $(FCOMP) $(DEBUG) --interfacefile input/input.v -f solver/face.F90 input
-	touch $@
 
-$(BUILDDIR)/solverpydep:  solver/face.F90  solver/error.F90  solver/functions.F90 solver/cap_functions.F90 solver/header.F90 solver/maths.F90 solver/error.F90 solver/compute.F90 solver/newton_solver.F solver/init.F90 solver/io.F90 solver/solver.F90 solver/step.F90 solver/face.v input/input.v
-	$(FORTHON) -a $(INSTALLARGS)  -a $(FCOMP) $(DEBUG) --interfacefile solver/face.v --macros input/input.v -d input -f solver/face.F90 solver  solver/header.F90 solver/error.F90  solver/functions.F90 solver/cap_functions.F90 solver/io.F90 solver/compute.F90 solver/maths.F90 solver/solver.F90 solver/newton_solver.F   solver/step.F90 solver/init.F90
+
+$(BUILDDIR)/facepydep:  src/face.F90  src/error.F90  src/functions.F90 src/cap_functions.F90 src/header.F90 src/maths.F90 src/error.F90 src/compute.F90 src/newton_solver.F src/init.F90 src/io.F90 src/solver.F90 src/step.F90  header/face.v
+	$(FORTHON) -a $(INSTALLARGS)  -a $(FCOMP) $(DEBUG) --interfacefile header/face.v --macros header/face.v -f src/face.F90 face  src/header.F90 src/error.F90  src/functions.F90 src/cap_functions.F90 src/io.F90 src/compute.F90 src/maths.F90 src/solver.F90 src/newton_solver.F   src/step.F90 src/init.F90
 	touch $@
 
 clean:
 	find . -depth -name build -exec rm -rf {} \;
+	find . -depth -name dist -exec rm -rf {} \;
+	find . -depth -name pyface.egg-info -exec rm -rf {} \;
 	find . -depth -name __pycache__ -exec rm -rf {} \;
-	touch FACEC_Forthon.c
+
