@@ -112,7 +112,7 @@ void initializec_() {
 
 /*  now call the Fortran version of exmain  */
 
-   print_hello_();
+ 
 
 
    sigaction(SIGINT,&oact,NULL);

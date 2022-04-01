@@ -325,7 +325,7 @@ right_surface_model_int(1:nspc) _integer  #
 print_hello() subroutine
 initialize_wrapper() subroutine
 initializec() subroutine
-allocate() subroutine
+allocate_face() subroutine
 do_step(status_step:logical) subroutine
 compute_dt() real function
 shift_array subroutine

@@ -970,7 +970,7 @@ subroutine initialize_wrapper
   use init
   call initialize()
 end subroutine
-  subroutine  allocate
+  subroutine  allocate_face
   use io
       if (.not. is_allocated) then
       call gchange('SpeciesHeader',0)
@@ -988,7 +988,7 @@ end subroutine
       else 
       call face_warning('face package already allocated. Use reallocate to force reallocation')
       endif
-  end subroutine allocate
+  end subroutine allocate_face
   
   subroutine  reallocate
   use error
