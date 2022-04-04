@@ -931,10 +931,10 @@ character*1 ::tmpstr='U'
         
            do k=1,nspc
              do kk=1,nspc
-                 if (k.ne.kk.and.namespc(k).eq.namespc(kk)) then
-                call face_error("two species have the same name: k=",k," and k=",kk," namespc=",namespc(k),&
-                " and namespc=",namespc(kk))
-            endif
+            !     if (k.ne.kk.and.namespc(k).eq.namespc(kk)) then
+                !call face_error("two species have the same name: k=",k," and k=",kk," namespc=",namespc(k),&
+               ! " and namespc=",namespc(kk))
+            !endif
        enddo
        enddo
 
